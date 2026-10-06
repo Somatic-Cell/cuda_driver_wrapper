@@ -1,4 +1,4 @@
-#include <cuda_driver_wrapprer/error.hpp>
+#include <cuda_driver_wrapper/error.hpp>
 
 #include <cstdint>
 #include <exception>
@@ -46,7 +46,7 @@ void test_failure_and_call_site()
 
         const std::string message = error.what();
         const std::string expected_location = 
-            std::string(expected_file) + std::to_string(expected_line);
+            std::string(expected_file) + ": " +  std::to_string(expected_line);
 
         require(message.find("intentional invalid value") != std::string::npos, "diagnostic must contain the operation");
         require(message.find("CUDA_ERROR_INVALID_VALUE") != std::string::npos, "diagnostic must contain the CUDA error name");

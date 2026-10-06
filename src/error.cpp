@@ -1,4 +1,4 @@
-#include <cuda_driver_wrapprer/error.hpp>
+#include <cuda_driver_wrapper/error.hpp>
 
 #include <cstdio>
 #include <sstream>
@@ -72,7 +72,7 @@ void check_cuda(
     message << operation_name << "returned "
             << details.name << " (" << static_cast<int>(result) << ")\n"
             << "Description: " << details.description << '\n'
-            << "Location: " << location.file_name() << ': ' << location.line();
+            << "Location: " << location.file_name() << ": " << location.line();
             
     throw CudaError(result, message.str());
 }
