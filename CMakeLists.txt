@@ -17,6 +17,7 @@ find_package(CUDAToolkit REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC
     src/error.cpp
+    src/device.cpp
 )
 
 add_library(
