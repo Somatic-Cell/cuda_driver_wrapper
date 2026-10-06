@@ -5,51 +5,49 @@
 
 cmake_minimum_required(VERSION 3.27)
 
-set(PROJECT_NAME "cuda_driver_wrapper")
-
 # このライブラリはホスト側の C++ だけで構成
 # 使用する CUDA や GPU のアーキテクチャに関しては，カーネルをビルドする側が設定する
 project(
-    ${PROJECT_NAME}
+    cuda_driver_wrapper
     VERSION 0.1
     LANGUAGES CXX
 )
 
 find_package(CUDAToolkit REQUIRED)
 
-add_library(PROJECT_NAME STATIC
+add_library(${PROJECT_NAME} STATIC
     src/error.cpp
 )
 
 add_library(
     cuda_driver_wrapper::cuda_driver_wrapper
-    ALIAS cuda_driver_wrapper
+    ALIAS ${PROJECT_NAME}
 )
 
 # このプロジェクトは C++20 の機能を使うため，利用側にも伝える
-target_compile_features(PROJECT_NAME PUBLIC
+target_compile_features(${PROJECT_NAME} PUBLIC
     cxx_std_20
 )
-set_target_properties(PROJECT_NAME PROPERTIES 
+set_target_properties(${PROJECT_NAME} PROPERTIES 
     CXX_EXTENSIONS OFF
 )
 
-target_include_directories(PROJECT_NAME PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
 # 公開 API には CUresult を含むため， CUDA ヘッダと Driver のリンク依存を公開する
 target_link_libraries(
-    PROJECT_NAME PUBLIC CUDA::cuda_driver
+    ${PROJECT_NAME} PUBLIC CUDA::cuda_driver
 )
 
 # 警告は，このライブのコンパイルにだけ適用
 if(MSVC)
-    target_compile_options(PROJECT_NAME
+    target_compile_options(${PROJECT_NAME}
         PRIVATE /W4 /utf-8 /permissive- /Zc:__cplusplus
     )
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNE|Clang")
-    target_compile_options(PROJECT_NAME
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(${PROJECT_NAME}
         PRIVATE -Wall -Wextra -Wpedantic
     )   
 endif()

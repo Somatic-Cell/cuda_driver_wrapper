@@ -11,7 +11,7 @@ namespace
 {
 namespace cdw = cuda_driver_wrapper;
 
-void require(const boole condition, const std::string_view message)
+void require(const bool condition, const std::string_view message)
 {
     if(!condition)
     {

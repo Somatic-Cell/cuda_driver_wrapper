@@ -68,7 +68,7 @@ void check_cuda(
     const ErrorDetails details = describe_error(result);
     const char* operation_name = operation != nullptr ? operation : "(unspecified operation)";
 
-    std::ostringstream mesasge;
+    std::ostringstream message;
     message << operation_name << "returned "
             << details.name << " (" << static_cast<int>(result) << ")\n"
             << "Description: " << details.description << '\n'
@@ -80,7 +80,7 @@ void check_cuda(
 bool report_cuda_cleanup_result(
     const CUresult result,
     const char* operation,
-    conset std::source_location location
+    const std::source_location location
 ) noexcept
 {
     if(result == CUDA_SUCCESS)
@@ -92,7 +92,7 @@ bool report_cuda_cleanup_result(
     const char* operation_name = operation != nullptr ? operation : "(unspecified operation)";
 
     static_cast<void>(
-        std::printf(
+        std::fprintf(
             stderr,
             "[cuda_driver_wrapper cleanup] %s returned %s (%d): %s at %s:%lu\n",
             operation_name,
