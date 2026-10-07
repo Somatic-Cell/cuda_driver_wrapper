@@ -14,10 +14,12 @@ project(
 )
 
 find_package(CUDAToolkit REQUIRED)
+find_package(Threads REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC
     src/error.cpp
     src/device.cpp
+    src/context.cpp
 )
 
 add_library(
@@ -39,7 +41,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 # 公開 API には CUresult を含むため， CUDA ヘッダと Driver のリンク依存を公開する
 target_link_libraries(
-    ${PROJECT_NAME} PUBLIC CUDA::cuda_driver
+    ${PROJECT_NAME} 
+    PUBLIC 
+    CUDA::cuda_driver
+    Threads::Threads
 )
 
 # 警告は，このライブのコンパイルにだけ適用

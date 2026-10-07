@@ -14,11 +14,11 @@ std::string read_device_name(
     const std::source_location location
 )
 {
-    // 最初は 256 バイトとして，名前が収まらなかったら拡張する
+    // 最初は 256 バイトを確保しておいて，名前が収まらなかったら拡張する
     std::string buffer(256, '\0');
     const std::size_t max_length = static_cast<std::size_t>((std::numeric_limits<int>::max)());
 
-    // 名前が収まるまでバッファを拡張して取得を試みる
+    // 名前が納まるまでバッファを拡張して取得を試みる
     for(;;)
     {
         // デバイス名を取得

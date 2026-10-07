@@ -69,3 +69,37 @@ set_tests_properties(cuda_driver_wrapper.device
         LABELS "gpu;cuda_driver"
         SKIP_RETURN_CODE 77
 )
+
+# M0.3: Primary context lifetime and scoped current context
+set(CONTEXT_TEST_NAME "cuda_driver_wrapper_context_test")
+
+add_executable(${CONTEXT_TEST_NAME} context_test.cpp)
+
+target_link_libraries(${CONTEXT_TEST_NAME}
+    PRIVATE cuda_driver_wrapper::cuda_driver_wrapper
+)
+
+set_target_properties(${CONTEXT_TEST_NAME}
+    PROPERTIES CXX_EXTENSIONS OFF
+)
+
+if(MSVC)
+    target_compile_options(${CONTEXT_TEST_NAME}
+        PRIVATE /W4 /utf-8 /permissive- /Zc:__cplusplus
+    )
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(${CONTEXT_TEST_NAME}
+        PRIVATE -Wall -Wextra -Wpedantic
+    )
+endif()
+
+add_test(
+    NAME cuda_driver_wrapper.context
+    COMMAND ${CONTEXT_TEST_NAME}
+)
+
+set_tests_properties(cuda_driver_wrapper.context
+    PROPERTIES
+        LABELS "gpu;cuda_driver;context"
+        SKIP_RETURN_CODE 77
+)
