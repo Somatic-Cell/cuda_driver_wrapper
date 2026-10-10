@@ -95,7 +95,7 @@ void test_primary_lifetime(const CUdevice device)
     require(before.active == 0, "test requires an isolated process with an inactive primary context");
 
     {
-        cdw::PrimaryContext first(device);
+        cdw::RetainPrimaryContext first(device);
         require(first.handle() != nullptr, "retain must return a non-null context");
         require(first.device() == device, "device() must preserve the supplied device");
         require_current(nullptr, "retaining a primary context must not change current");
@@ -103,7 +103,7 @@ void test_primary_lifetime(const CUdevice device)
         require(retained.active != 0, "retained primary context must be active");
 
         {
-            cdw::PrimaryContext second(device);
+            cdw::RetainPrimaryContext second(device);
             require(second.handle() == first.handle(), "same-device retains must identify the same primary context");
             require(primary_state(device).flags == retained.flags, "another retain must not change context flags");
         }
@@ -166,7 +166,7 @@ void test_external_context(const CUdevice device, const CUcontext primary)
         require_current(external.handle(), "cuCtxCreate must make the external context current");
 
         {
-            cdw::PrimaryContext another_reference(device);
+            cdw::RetainPrimaryContext another_reference(device);
             require(another_reference.handle() == primary, "additional retain must identify the same primary context");
             require_current(external.handle(), "retain must not overwrite an external current context");
         }
@@ -258,7 +258,7 @@ void test_invalid_inputs()
     try
     {
         expected_line = std::source_location::current().line() + 1;
-        cdw::PrimaryContext invalid(static_cast<CUdevice>(-1));
+        cdw::RetainPrimaryContext invalid(static_cast<CUdevice>(-1));
     }
     catch(const cdw::CudaError& error)
     {
@@ -276,9 +276,9 @@ void test_invalid_inputs()
 
 int main()
 {
-    static_assert(!std::is_copy_constructible_v<cdw::PrimaryContext>);
-    static_assert(!std::is_move_constructible_v<cdw::PrimaryContext>);
-    static_assert(std::is_nothrow_destructible_v<cdw::PrimaryContext>);
+    static_assert(!std::is_copy_constructible_v<cdw::RetainPrimaryContext>);
+    static_assert(!std::is_move_constructible_v<cdw::RetainPrimaryContext>);
+    static_assert(std::is_nothrow_destructible_v<cdw::RetainPrimaryContext>);
     static_assert(!std::is_copy_constructible_v<cdw::ScopedCurrentContext>);
     static_assert(!std::is_move_constructible_v<cdw::ScopedCurrentContext>);
     static_assert(std::is_nothrow_destructible_v<cdw::ScopedCurrentContext>);
@@ -310,7 +310,7 @@ int main()
         test_invalid_inputs();
         test_primary_lifetime(device);
         {
-            cdw::PrimaryContext primary(device);
+            cdw::RetainPrimaryContext primary(device);
             test_same_context_nesting(primary.handle());
             test_exception_restoration(primary.handle());
             test_external_context(device, primary.handle());

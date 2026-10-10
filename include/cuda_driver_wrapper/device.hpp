@@ -1,3 +1,6 @@
+// ----------------------------
+// 利用する CUDA デバイスを管理する
+// ----------------------------
 #pragma once
 
 #include <cuda.h>
@@ -9,7 +12,7 @@
 namespace cuda_driver_wrapper
 {
 
-// クエリした時点での情報を保有する構造体
+// クエリした時点でのデバイスの情報を保有する構造体
 struct DeviceInfo
 {
     std::string name;
@@ -38,9 +41,10 @@ int get_device_count(
     std::source_location location = std::source_location::current()
 );
 
+// GPU の番号を指定して CUDA デバイスを取得
 [[nodiscard]]
 CUdevice get_device(
-    int ordinal, // [0, get_device_count()) の列挙番号
+    int ordinal, // 利用したい GPU の番号. [0, get_device_count()) 
     std::source_location location = std::source_location::current()
 );
 

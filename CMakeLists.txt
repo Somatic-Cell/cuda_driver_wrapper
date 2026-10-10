@@ -20,6 +20,8 @@ add_library(${PROJECT_NAME} STATIC
     src/error.cpp
     src/device.cpp
     src/context.cpp
+    src/stream.cpp
+    src/event.cpp
 )
 
 add_library(

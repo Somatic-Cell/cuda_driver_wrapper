@@ -30,7 +30,7 @@ CUcontext get_current_context(const std::source_location location)
     return context;
 }
 
-PrimaryContext::PrimaryContext(
+RetainPrimaryContext::RetainPrimaryContext(
     const CUdevice device,
     const std::source_location location
 ) : device_(device)
@@ -42,7 +42,7 @@ PrimaryContext::PrimaryContext(
     );
 }
 
-PrimaryContext::~PrimaryContext() noexcept
+RetainPrimaryContext::~RetainPrimaryContext() noexcept
 {
     static_cast<void>(report_cuda_cleanup_result(
         cuDevicePrimaryCtxRelease(device_), 
@@ -80,7 +80,7 @@ void ScopedCurrentContext::restore(
 
     if(std::this_thread::get_id() != thread_id_)
     {
-        throw std::logic_error("ScopedCurrentContext must be restored on tis creating thread");
+        throw std::logic_error("ScopedCurrentContext must be restored on its creating thread");
     }
 
     if(get_current_context(location) != context_)
